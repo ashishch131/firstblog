@@ -1,19 +1,19 @@
 "use client"
 import React, { useEffect, useState } from 'react'
 import styles from './dashboard.module.css'
-import useSWR from 'swr'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
+import useSWR from 'swr'
 
 
 const Dashboard = () => {
   const session = useSession();
+   const router = useRouter();
   const fetcher = (...args) => fetch(...args).then(res => res.json());
-const { data, error, isLoading } = useSWR(`/api/post?username= ${session?.data?.user.name}`, fetcher)
-console.log(data)
- 
-  const router = useRouter();
+  const { data, mutate, error, isLoading } = useSWR(`/api/post?username=${session?.data?.user?.name}`, fetcher);
+  console.log(data)
+
   if(session.status === "loading"){
     return <p>Loading..</p>
   }
@@ -65,11 +65,24 @@ const handleSubmit = async (e)=>{
         username: session.data.user.name,
       })
     })
+    mutate();
+    e.target.reset();
   } catch (error) {
     console.log(error)
     throw new Error(error);
   }
 
+}
+
+const handleDelete = async (id)=>{
+  try {
+    await fetch(`/api/post/${id}`, {
+      method: "DELETE"
+    });
+mutate();
+  } catch (error) {
+    console.log(error)
+  }
 }
 if(session.status === "authenticated"){
   return (
@@ -78,10 +91,10 @@ if(session.status === "authenticated"){
     {isLoading? "loading..." : data.map((post)=>(
             <div className={styles.post} key={post._id}>
               <div className={styles.imgContainer}>
-                <Image src={item.img} alt="" width={200} height={100} />
+                <Image src={post.img} alt="" width={200} height={100} />
               </div>
               <h2 className={styles.postTitle}>{post.title}</h2>
-              <span className={styles.delete}>
+              <span className={styles.delete} onClick={()=>handleDelete(post._id)}>
                 X
               </span>
             </div>

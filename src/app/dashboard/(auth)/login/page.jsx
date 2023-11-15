@@ -16,12 +16,20 @@ const Login = () => {
   }
   console.log(session);
 
+  const handleSubmit = (e)=>{
+    e.preventDefault();
+const email = e.target[0].value;
+const password = e.target[1].value;
+
+signIn("credentials", {email, password});
+  }
+
   return (
     <div className={styles.container}>
       <h1 className={styles.title}></h1>
       <h2 className={styles.subtitle}>Please sign in to see the dashboard.</h2>
 
-      <form  className={styles.form}>
+      <form  className={styles.form} onSubmit={handleSubmit}>
         <input
           type="text"
           placeholder="Email"

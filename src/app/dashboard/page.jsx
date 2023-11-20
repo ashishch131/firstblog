@@ -104,7 +104,7 @@ if(session.status === "authenticated"){
       <h1>Add New Post</h1>
       <input type="text" placeholder="Title" className={styles.input} />
       <input type="text" placeholder="Desc" className={styles.input} />
-      <input type="text" placeholder="Image" className={styles.input} />
+      <input type="text" placeholder="Image (pexels.com)" className={styles.input} />
       <textarea
         placeholder="Content"
         className={styles.textArea}
